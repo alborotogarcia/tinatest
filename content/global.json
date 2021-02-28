@@ -1,0 +1,16 @@
+{
+  "header": {
+    "navigation": [
+      {
+        "name": "link 1",
+        "link": "/",
+        "id": "lauzulb5x"
+      },
+      {
+        "name": "Another link",
+        "link": "/",
+        "id": "7376jjwgg"
+      }
+    ]
+  }
+}

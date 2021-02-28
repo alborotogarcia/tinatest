@@ -1,0 +1,24 @@
+{
+  "title": "Homepage",
+  "blocks": [
+    {
+      "_template": "button",
+      "buttonText": "Click button",
+      "width": "halfLeft"
+    },
+    {
+      "_template": "textContent",
+      "html": "<p>Add text here</p>",
+      "bgColor": "#3d6fb3",
+      "textColor": "white",
+      "textAlign": "center",
+      "width": "halfRight"
+    },
+    {
+      "_template": "image",
+      "image": "/survery concrete.png",
+      "width": "container",
+      "padding": "3"
+    }
+  ]
+}
