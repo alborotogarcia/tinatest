@@ -1,5 +1,4 @@
-import { BlocksControls } from 'react-tinacms-inline'
-import { InlineWysiwyg } from 'react-tinacms-editor'
+import { BlocksControls, InlineWysiwyg } from 'react-tinacms-inline'
 import { Box, GridItem } from '@chakra-ui/layout'
 import { Property } from 'csstype'
 import { widths, widthField, paddingField } from './componentUtils'
