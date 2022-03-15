@@ -45,5 +45,4 @@ table th,
 table td {
  padding: .5em;
  border: 1px solid lightgrey;
-}
-`
+}`
