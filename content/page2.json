@@ -1,1 +1,10 @@
-{"title":"page2"}
+{
+  "title": "page2",
+  "blocks": [
+    {
+      "_template": "textContent",
+      "html": "<p>Come at me bro</p><p></p><p><img src=\"/favicon.ico\"></p>",
+      "width": "container"
+    }
+  ]
+}
