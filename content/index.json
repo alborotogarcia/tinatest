@@ -3,12 +3,12 @@
   "blocks": [
     {
       "_template": "button",
-      "buttonText": "Click button",
+      "buttonText": "Click button 2",
       "width": "halfLeft"
     },
     {
       "_template": "textContent",
-      "html": "<p>Add text here</p>",
+      "html": "<p>Add text here</p><table><tbody><tr><th>AAFA</th><th>asfa</th><th></th></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>",
       "bgColor": "#3d6fb3",
       "textColor": "white",
       "textAlign": "center",
