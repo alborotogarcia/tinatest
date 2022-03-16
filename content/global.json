@@ -2,6 +2,11 @@
   "header": {
     "navigation": [
       {
+        "name": "New Link",
+        "link": "/",
+        "id": "880q0sjwx"
+      },
+      {
         "name": "page2",
         "link": "/page2",
         "id": "lauzulb5x"
