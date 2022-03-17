@@ -8,20 +8,19 @@ import { getLocalFiles } from '@/utils/getLocalFiles'
 import { useCreatePage } from '@/utils/useCreatePage'
 import { getGlobalStaticProps } from '@/utils/getGlobalStaticProps'
 import { useCreateJSONBlogPage } from '@/utils/useCreateJSONBlogPage'
-import { useCreateMDBlogPage } from '@/utils/useCreateMDBlogPage'
 import { InlineForm, InlineBlocks } from 'react-tinacms-inline'
 import { TextContent, TextContentTemplate } from '@/components/TextContent'
 import { ImageComponent, ImageComponentTemplate } from '@/components/ImageComponent'
 import { ButtonComponent, ButtonComponentTemplate } from '@/components/ButtonComponent'
 
 const formOptions = {
-  label: 'Page',
+  label: 'JSONBlog',
   fields: [
     { name: 'title', component: 'text' }
   ]
 }
 
-interface Props { file: GitFile, allPages: string[], allJSONBlogs: string[], allMDBlogs: string[], global: any }
+interface Props { file: GitFile, allPages: string[], allBlogs: string[], global: any }
 
 export const GridContainer = ({ innerRef, children }: { innerRef: any, children: any }) => (
   <Grid templateColumns="1fr repeat(4, minMax(auto, 300px)) 1fr" ref={innerRef}>
@@ -29,17 +28,16 @@ export const GridContainer = ({ innerRef, children }: { innerRef: any, children:
   </Grid>
 )
 
-export default function Page ({ file, allPages, allJSONBlogs, allMDBlogs, global }: Props) {
+export default function Blog ({ file, allPages, allBlogs, global }: Props) {
   useCreatePage(allPages)
-  useCreateJSONBlogPage(allJSONBlogs)
-  useCreateMDBlogPage(allMDBlogs)
+  useCreateJSONBlogPage(allBlogs)
   const [, form] = useGithubJsonForm(file, formOptions)
   usePlugin(form)
   return (
     <Layout global={global}>
       <ModalProvider>
         <InlineForm form={form}>
-          <InlineBlocks name="blocks" blocks={PAGE_BLOCKS as any} components={{
+          <InlineBlocks name="blocks" blocks={BLOG_BLOCKS as any} components={{
             Container: GridContainer
           }} />
         </InlineForm>
@@ -48,7 +46,7 @@ export default function Page ({ file, allPages, allJSONBlogs, allMDBlogs, global
   )
 }
 
-const PAGE_BLOCKS = {
+const BLOG_BLOCKS = {
   textContent: {
     Component: TextContent,
     template: TextContentTemplate
@@ -69,9 +67,8 @@ const PAGE_BLOCKS = {
 export const getStaticProps = async function ({ preview, previewData }) {
   const global = await getGlobalStaticProps(preview, previewData)
   const allPages = (await getLocalFiles('content') || []).map((fileName) => fileName.replace('content/', '').replace('.json', ''))
-  const allJSONBlogs = (await getLocalFiles('content/jsonblog') || []).map((fileName) => fileName.replace('content/jsonblog/', '').replace('.json', ''))
-  const allMDBlogs = (await getLocalFiles('content/mdblog') || []).map((fileName) => fileName.replace('content/mdblog/', '').replace('.md', ''))
-  console.log(allJSONBlogs,allMDBlogs)
+  const allBlogs = (await getLocalFiles('content/jsonblog') || []).map((fileName) => fileName.replace('content/jsonblog/', '').replace('.json', ''))
+
   const fileRelativePath = 'content/index.json'
   if (preview) {
     try {
@@ -84,8 +81,7 @@ export const getStaticProps = async function ({ preview, previewData }) {
         props: {
           allPages,
           global,
-          allJSONBlogs,
-          allMDBlogs,
+          allBlogs,
           previewURL: `https://raw.githubusercontent.com/${previewData.working_repo_full_name}/${previewData.head_branch}`,
           ...previewProps.props
         }
@@ -95,8 +91,7 @@ export const getStaticProps = async function ({ preview, previewData }) {
         props: {
           global,
           allPages,
-          allJSONBlogs,
-          allMDBlogs,
+          allBlogs,
           previewURL: `https://raw.githubusercontent.com/${previewData.working_repo_full_name}/${previewData.head_branch}`,
           file: {
             fileRelativePath,
@@ -107,14 +102,13 @@ export const getStaticProps = async function ({ preview, previewData }) {
     }
   }
 
-  const content = (await import('../content/index.json')).default
+  const content = (await import('../../content/jsonblog/testablog.json')).default
 
   return {
     props: {
       global,
       allPages,
-      allJSONBlogs,
-      allMDBlogs,
+      allBlogs,
       sourceProvider: null,
       error: null,
       preview: false,

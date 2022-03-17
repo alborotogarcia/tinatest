@@ -6,13 +6,13 @@ import { FORM_ERROR } from 'final-form'
 import { removeInvalidChars } from './removeInvalidChars'
 import { setCachedFormData, getCachedFormData } from './formCache'
 
-export const useCreateBlogPage = (allBlogs = []) => {
+export const useCreateJSONBlogPage = (allBlogs = []) => {
   const router = useRouter()
   const cms = useCMS()
   usePlugins([
     {
       __type: 'content-creator',
-      name: 'Make a new blog',
+      name: 'Make a new json-based blog',
       // @ts-ignore
       fields: [
         {
@@ -60,7 +60,7 @@ export const useCreateBlogPage = (allBlogs = []) => {
       onSubmit: async (frontMatter) => {
         const github = cms.api.github
         const fileName = removeInvalidChars(slugify(frontMatter.title, { lower: true }))
-        const fileRelativePath = `content/blog/${fileName}.json`
+        const fileRelativePath = `content/jsonblog/${fileName}.json`
         return await github
           .commit(
             fileRelativePath,
@@ -74,7 +74,7 @@ export const useCreateBlogPage = (allBlogs = []) => {
             setCachedFormData(fileRelativePath, {
               sha: response.content.sha
             })
-            setTimeout(() => router.push(`blog/${fileName}`), 1500)
+            setTimeout(() => router.push(`jsonblog/${fileName}`), 1500)
           })
           .catch((e) => {
             return { [FORM_ERROR]: e }

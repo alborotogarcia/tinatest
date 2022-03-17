@@ -1,15 +1,15 @@
 import { Layout } from '@/components/Layout'
 import { Box, Text } from '@chakra-ui/layout'
-import { getGithubPreviewProps, parseJson, parseMarkdown } from 'next-tinacms-github'
+import { getGithubPreviewProps, parseJson } from 'next-tinacms-github'
 import { usePlugin, ModalProvider } from 'tinacms'
-import { useGithubMarkdownForm } from "react-tinacms-github"
-// import { useGithubJsonForm } from 'react-tinacms-github'
+// import { useGithubMarkdownForm } from "react-tinacms-github"
+import { useGithubJsonForm } from 'react-tinacms-github'
 import { GitFile } from 'react-tinacms-github/dist/src/form/useGitFileSha'
 import { useRouter } from 'next/router'
 import { fileToUrl } from '@/utils/fileToUrl'
 import { getLocalFiles } from '@/utils/getLocalFiles'
 // import { useCreatePage } from '@/utils/useCreatePage'
-import { useCreateMDBlogPage } from '@/utils/useCreateMDBlogPage'
+import { useCreateJSONBlogPage } from '@/utils/useCreateJSONBlogPage'
 import { ButtonComponent, ButtonComponentTemplate } from '@/components/ButtonComponent'
 import { ImageComponent } from '@/components/Image'
 import { ImageComponentTemplate } from '@/components/ImageComponent'
@@ -29,7 +29,7 @@ const formOptions = {
 interface Props {file: GitFile, allBlogs: string[], global: any}
 
 export default function Blog ({ file, allBlogs, global }: Props) {
-  useCreateMDBlogPage(allBlogs)
+  useCreateJSONBlogPage(allBlogs)
   const router = useRouter()
   if (!file) {
     return (
@@ -45,7 +45,7 @@ export default function Blog ({ file, allBlogs, global }: Props) {
     return <div>Loading...</div>
   }
 
-  const [, form] = useGithubMarkdownForm(file, formOptions)
+  const [, form] = useGithubJsonForm(file, formOptions)
   usePlugin(form)
 
   return (
@@ -84,16 +84,16 @@ const BLOG_BLOCKS = {
 //  * Fetch data with getStaticProps based on 'preview' mode
 //  */
 export const getStaticProps = async function ({ preview, previewData, params }) {
-  const allBlogs = (await getLocalFiles('content/mdblog') || []).map((fileName) => fileName.replace('content/mdblog/', '').replace('.md', ''))
+  const allBlogs = (await getLocalFiles('content/jsonblog') || []).map((fileName) => fileName.replace('content/jsonblog/', '').replace('.json', ''))
   const global = await getGlobalStaticProps(preview, previewData)
   const { blogName } = params
-  const fileRelativePath = `content/mdblog/${blogName}.md`
+  const fileRelativePath = `content/jsonblog/${blogName}.json`
   if (preview) {
     try {
       const previewProps = await getGithubPreviewProps({
         ...previewData,
         fileRelativePath,
-        parse: parseMarkdown
+        parse: parseJson
       })
       return {
         props: {
@@ -118,7 +118,7 @@ export const getStaticProps = async function ({ preview, previewData, params }) 
     }
   }
 
-  const content = (await import(`@/content/mdblog/${blogName}.md`)).default
+  const content = (await import(`@/content/jsonblog/${blogName}.json`)).default
 
   return {
     props: {
@@ -137,10 +137,11 @@ export const getStaticProps = async function ({ preview, previewData, params }) 
 
 export const getStaticPaths = async function () {
   const fg = require('fast-glob')
-  const contentDir = 'content/mdblog'
-  const files = await fg(`${contentDir}/*.md`)
+  const contentDir = 'content/jsonblog'
+  const files = await fg(`${contentDir}/*.json`)
+  console.log(files)
   const paths = files
-    .filter((file) => !file.endsWith('index.md'))
+    .filter((file) => !file.endsWith('index.json'))
     .map((file) => {
       const slug = fileToUrl(file, contentDir)
       return { params: { blogName: slug } }
