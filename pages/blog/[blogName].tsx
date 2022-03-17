@@ -1,13 +1,13 @@
-import { Layout } from '../components/Layout'
+import { Layout } from '@/components/Layout'
 import { Box, Text } from '@chakra-ui/layout'
 import { getGithubPreviewProps, parseJson } from 'next-tinacms-github'
 import { usePlugin, ModalProvider } from 'tinacms'
 import { useGithubJsonForm } from 'react-tinacms-github'
 import { GitFile } from 'react-tinacms-github/dist/src/form/useGitFileSha'
 import { useRouter } from 'next/router'
-import { fileToUrl } from '../utils/fileToUrl'
-import { getLocalFiles } from '../utils/getLocalFiles'
-import { useCreatePage } from '../utils/useCreatePage'
+import { fileToUrl } from '@/utils/fileToUrl'
+import { getLocalFiles } from '@/utils/getLocalFiles'
+// import { useCreatePage } from '@/utils/useCreatePage'
 import { useCreateBlogPage } from '@/utils/useCreateBlogPage'
 import { ButtonComponent, ButtonComponentTemplate } from '@/components/ButtonComponent'
 import { ImageComponent } from '@/components/Image'
@@ -18,16 +18,15 @@ import { InlineForm, InlineBlocks } from 'react-tinacms-inline'
 import { getGlobalStaticProps } from '@/utils/getGlobalStaticProps'
 
 const formOptions = {
-  label: 'Page',
+  label: 'Blog',
   fields: [
     { name: 'title', component: 'text' }
   ]
 }
 
-interface Props {file: GitFile, allPages: string[], allBlogs: string[], global: any}
+interface Props {file: GitFile, allBlogs: string[], global: any}
 
-export default function Page ({ file, allPages, allBlogs, global }: Props) {
-  useCreatePage(allPages)
+export default function Blog ({ file, allBlogs, global }: Props) {
   useCreateBlogPage(allBlogs)
   const router = useRouter()
   if (!file) {
@@ -51,7 +50,7 @@ export default function Page ({ file, allPages, allBlogs, global }: Props) {
     <Layout global={global}>
       <ModalProvider>
         <InlineForm form={form}>
-          <InlineBlocks name="blocks" blocks={PAGE_BLOCKS as any} components={{
+          <InlineBlocks name="blocks" blocks={BLOG_BLOCKS as any} components={{
             Container: GridContainer
           }} />
         </InlineForm>
@@ -60,7 +59,7 @@ export default function Page ({ file, allPages, allBlogs, global }: Props) {
   )
 }
 
-const PAGE_BLOCKS = {
+const BLOG_BLOCKS = {
   textContent: {
     Component: TextContent,
     template: TextContentTemplate
@@ -79,12 +78,10 @@ const PAGE_BLOCKS = {
 //  * Fetch data with getStaticProps based on 'preview' mode
 //  */
 export const getStaticProps = async function ({ preview, previewData, params }) {
-  const allPages = (await getLocalFiles('content') || []).map((fileName) => fileName.replace('content/', '').replace('.json', ''))
   const allBlogs = (await getLocalFiles('content/blog') || []).map((fileName) => fileName.replace('content/blog/', '').replace('.json', ''))
   const global = await getGlobalStaticProps(preview, previewData)
-
-  const { pageName } = params
-  const fileRelativePath = `content/${pageName}.json`
+  const { blogName } = params
+  const fileRelativePath = `content/blog/${blogName}.json`
   if (preview) {
     try {
       const previewProps = await getGithubPreviewProps({
@@ -95,7 +92,6 @@ export const getStaticProps = async function ({ preview, previewData, params }) 
       return {
         props: {
           global,
-          allPages,
           allBlogs,
           previewURL: `https://raw.githubusercontent.com/${previewData.working_repo_full_name}/${previewData.head_branch}`,
           ...previewProps.props
@@ -105,7 +101,6 @@ export const getStaticProps = async function ({ preview, previewData, params }) 
       return {
         props: {
           global,
-          allPages,
           allBlogs,
           previewURL: `https://raw.githubusercontent.com/${previewData.working_repo_full_name}/${previewData.head_branch}`,
           file: {
@@ -117,12 +112,11 @@ export const getStaticProps = async function ({ preview, previewData, params }) 
     }
   }
 
-  const content = (await import(`../content/${pageName}.json`)).default
+  const content = (await import(`@/content/blog/${blogName}.json`)).default
 
   return {
     props: {
       global,
-      allPages,
       allBlogs,
       sourceProvider: null,
       error: null,
@@ -137,13 +131,13 @@ export const getStaticProps = async function ({ preview, previewData, params }) 
 
 export const getStaticPaths = async function () {
   const fg = require('fast-glob')
-  const contentDir = 'content'
-  const files = await fg(`${contentDir}**/*.json`)
+  const contentDir = 'content/blog'
+  const files = await fg(`${contentDir}/*.json`)
   const paths = files
     .filter((file) => !file.endsWith('index.json'))
     .map((file) => {
       const slug = fileToUrl(file, contentDir)
-      return { params: { pageName: slug } }
+      return { params: { blogName: slug } }
     })
   return {
     fallback: true,

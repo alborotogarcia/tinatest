@@ -1,4 +1,4 @@
-import '../styles/globals.css'
+import '@/styles/globals.css'
 import { ChakraProvider, extendTheme, ThemeConfig } from '@chakra-ui/react'
 import App from 'next/app'
 import { TinaCMS, TinaProvider } from 'tinacms'
