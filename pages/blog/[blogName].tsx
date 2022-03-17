@@ -16,6 +16,7 @@ import { TextContent, TextContentTemplate } from '@/components/TextContent'
 import { GridContainer } from '.'
 import { InlineForm, InlineBlocks } from 'react-tinacms-inline'
 import { getGlobalStaticProps } from '@/utils/getGlobalStaticProps'
+import MarkdownContent, { MarkdownContentTemplate } from '@/components/MarkdownContent'
 
 const formOptions = {
   label: 'Blog',
@@ -71,6 +72,10 @@ const BLOG_BLOCKS = {
   button: {
     Component: ButtonComponent,
     template: ButtonComponentTemplate
+  },
+  markdown: {
+    Component: MarkdownContent,
+    template: MarkdownContentTemplate
   }
 }
 

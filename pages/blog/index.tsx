@@ -14,7 +14,7 @@ import { ImageComponent, ImageComponentTemplate } from '@/components/ImageCompon
 import { ButtonComponent, ButtonComponentTemplate } from '@/components/ButtonComponent'
 
 const formOptions = {
-  label: 'Page',
+  label: 'Blog',
   fields: [
     { name: 'title', component: 'text' }
   ]
